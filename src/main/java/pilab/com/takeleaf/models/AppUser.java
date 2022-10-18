@@ -48,6 +48,7 @@ public class AppUser {
     private Set<UserRole> userRoles=new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Post> post;
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Post> likedPost;
     public Integer getId() {
         return id;
