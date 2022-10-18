@@ -3,6 +3,14 @@ package pilab.com.takeleaf.models;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 public class Role {
     
     public Role() {
@@ -12,8 +20,12 @@ public class Role {
         this.name = name;
         this.userRoles = userRoles;
     }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false,nullable = false)
     private int roleId;
     private String name;
+    @OneToMany(mappedBy = "role",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<UserRole> userRoles=new HashSet<>();
     public int getRoleId() {
         return roleId;

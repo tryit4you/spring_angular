@@ -2,6 +2,11 @@ package pilab.com.takeleaf.models;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 public class Comment {
     
     public Comment() {
@@ -12,8 +17,12 @@ public class Comment {
         this.content = content;
         this.postedDate = postedDate;
     }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false,nullable = false)
     private Integer id;
     private String username;
+    @Column(columnDefinition = "text")
     private String content;
     private Date postedDate;
     public Integer getId() {

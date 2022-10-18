@@ -3,6 +3,16 @@ package pilab.com.takeleaf.models;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+@Entity
 public class Post {
     
     public Post() {
@@ -18,13 +28,19 @@ public class Post {
         this.userImageId = userImageId;
         this.commentList = commentList;
     }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false,nullable = false)
     private Integer id;
     private String name;
+    @Column(columnDefinition = "text")
     private String caption;
     private String location;
     private int likes;
     private Date postedDate;
     private Integer userImageId;
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name="post_id")
     private List<Comment> commentList;
     public Integer getId() {
         return id;

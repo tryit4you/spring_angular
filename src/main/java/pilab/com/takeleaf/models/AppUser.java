@@ -5,14 +5,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+@Entity
 public class AppUser {
     
     public AppUser() {
     }
 
-    public AppUser(Integer id, String username, String password, String email, String bio, Date createdDate,
+    public AppUser(Integer id,String name, String username, String password, String email, String bio, Date createdDate,
             Set<UserRole> userRoles, List<Post> post, List<Post> likedPost) {
         this.id = id;
+        this.name=name;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -22,14 +32,21 @@ public class AppUser {
         this.post = post;
         this.likedPost = likedPost;
     }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    private String name;
+    @Column(unique = true)
     private String username;
     private String password;
     private String email;
+    @Column(columnDefinition = "text")
     private String bio;
     private Date createdDate;
 
+    @OneToMany(mappedBy = "appUser",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<UserRole> userRoles=new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Post> post;
     private List<Post> likedPost;
     public Integer getId() {
@@ -44,6 +61,14 @@ public class AppUser {
     public void setUsername(String username) {
         this.username = username;
     }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPassword() {
         return password;
     }

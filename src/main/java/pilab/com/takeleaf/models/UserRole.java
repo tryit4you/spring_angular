@@ -1,5 +1,15 @@
 package pilab.com.takeleaf.models;
 
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class UserRole {
     
     public UserRole() {
@@ -9,9 +19,18 @@ public class UserRole {
         this.appUser = appUser;
         this.role = role;
     }
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false,nullable = false)
     private long userRoleId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private AppUser appUser;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
+
     public long getUserRoleId() {
         return userRoleId;
     }
