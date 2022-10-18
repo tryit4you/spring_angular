@@ -9,7 +9,7 @@ public class AppUser {
     
     public AppUser() {
     }
-    
+
     public AppUser(Integer id, String username, String password, String email, String bio, Date createdDate,
             Set<UserRole> userRoles, List<Post> post, List<Post> likedPost) {
         this.id = id;
