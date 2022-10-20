@@ -43,12 +43,30 @@ public class AccountServiceImp implements AccountService {
     private JavaMailSender mailSender;
 
     @Override
-    public void saveUser(AppUser appUser) {
+	@Transactional
+    public AppUser   saveUser(AppUser appUser) {
         String password = RandomStringUtils.randomAlphanumeric(10);
-        String encryptedPassword = bcrypt.encode(password);
-        appUser.setPassword(encryptedPassword);
-        userRepo.save(appUser);
-        mailSender.send(emailConstructor.constructNewUserMail(appUser, password));
+		String encryptedPassword = bCryptPasswordEncoder.encode(password);
+		AppUser appUser = new AppUser();
+		appUser.setPassword(encryptedPassword);
+		appUser.setName(name);
+		appUser.setUsername(username);
+		appUser.setEmail(email);
+		Set<UserRole> userRoles = new HashSet<>();
+		userRoles.add(new UserRole(appUser, accountService.findUserRoleByName("USER")));
+		appUser.setUserRoles(userRoles);
+		appUserRepo.save(appUser);
+		byte[] bytes;
+		try {
+			bytes = Files.readAllBytes(Constants.TEMP_USER.toPath());
+			String fileName = appUser.getId() + ".png";
+			Path path = Paths.get(Constants.USER_FOLDER + fileName);
+			Files.write(path, bytes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mailSender.send(emailConstructor.constructNewUserEmail(appUser, password));
+		return appUser;     
 
     }
 

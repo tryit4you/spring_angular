@@ -10,7 +10,7 @@ import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.models.Role;
 
 public interface AccountService {
-    public void saveUser(AppUser appUser);
+    public AppUser saveUser(AppUser appUser);
 
     public AppUser findByUsername(String username);
 
