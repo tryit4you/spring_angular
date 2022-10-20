@@ -1,5 +1,6 @@
 package pilab.com.takeleaf.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -14,12 +15,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 @Entity
-public class AppUser {
+public class AppUser implements Serializable{
     
     public AppUser() {
     }
 
-    public AppUser(Integer id,String name, String username, String password, String email, String bio, Date createdDate,
+    public AppUser(Long id,String name, String username, String password, String email, String bio, Date createdDate,
             Set<UserRole> userRoles, List<Post> post, List<Post> likedPost) {
         this.id = id;
         this.name=name;
@@ -32,9 +33,10 @@ public class AppUser {
         this.post = post;
         this.likedPost = likedPost;
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     private String name;
     @Column(unique = true)
     private String username;
@@ -50,10 +52,10 @@ public class AppUser {
     private List<Post> post;
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Post> likedPost;
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getUsername() {
@@ -103,13 +105,13 @@ public class AppUser {
     public List<Post> getPost() {
         return post;
     }
-    public void setPost(List<Post> post) {
-        this.post = post;
+    public void setPost(Post post) {
+        this.post.add(post);
     }
     public List<Post> getLikedPost() {
         return likedPost;
     }
-    public void setLikedPost(List<Post> likedPost) {
-        this.likedPost = likedPost;
+    public void setLikedPost(Post likedPost) {
+        this.likedPost.add(likedPost);
     }
 }

@@ -1,5 +1,6 @@
 package pilab.com.takeleaf.models;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,12 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 @Entity
-public class Post {
+public class Post implements Serializable{
     
     public Post() {
     }
-    public Post(Integer id, String name, String caption, String location, int likes, Date postedDate,
-            Integer userImageId, List<Comment> commentList) {
+    public Post(Long id, String name, String caption, String location, int likes, Date postedDate,
+            Long userImageId, List<Comment> commentList) {
         this.id = id;
         this.name = name;
         this.caption = caption;
@@ -31,21 +32,28 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false,nullable = false)
-    private Integer id;
+    private Long id;
     private String name;
     @Column(columnDefinition = "text")
     private String caption;
     private String location;
     private int likes;
     private Date postedDate;
-    private Integer userImageId;
+    private String username;
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    private Long userImageId;
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name="post_id")
     private List<Comment> commentList;
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getName() {
@@ -78,10 +86,10 @@ public class Post {
     public void setPostedDate(Date postedDate) {
         this.postedDate = postedDate;
     }
-    public Integer getUserImageId() {
+    public Long getUserImageId() {
         return userImageId;
     }
-    public void setUserImageId(Integer userImageId) {
+    public void setUserImageId(Long userImageId) {
         this.userImageId = userImageId;
     }
     public List<Comment> getCommentList() {

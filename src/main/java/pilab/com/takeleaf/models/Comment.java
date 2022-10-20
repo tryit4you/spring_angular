@@ -1,5 +1,6 @@
 package pilab.com.takeleaf.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Comment {
+public class Comment implements Serializable{
     
     public Comment() {
     }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.models.Post;
 
@@ -20,5 +22,5 @@ public interface PostService {
 
     public Post deletePost(Post post);
 
-    public String savePostImage(HttpServletRequest request,String fileName);
+    public String savePostImage(MultipartFile multipartFile,String fileName);
 }

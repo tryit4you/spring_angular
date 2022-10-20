@@ -1,10 +1,13 @@
 package pilab.com.takeleaf.services;
 
+import java.util.HashMap;
 import java.util.List;
 
-import javax.management.relation.Role;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import pilab.com.takeleaf.models.AppUser;
+import pilab.com.takeleaf.models.Role;
 
 public interface AccountService {
     public void saveUser(AppUser appUser);
@@ -19,7 +22,9 @@ public interface AccountService {
 
     public Role saveRole(Role role);
 
-    public void updateUser(AppUser appUser);
+    public void updateUser(AppUser appUser,HashMap<String,String> request);
+
+    public void updateUserPassword(AppUser appUser,String newPassword);
 
     public AppUser findById(Long id);
 
@@ -29,5 +34,8 @@ public interface AccountService {
 
     public List<AppUser> getUserListByUsername(String username);
 
-    public void simpleSave(AppUser appUser); 
+    public AppUser simpleSave(AppUser appUser); 
+
+	public String saveUserImage(MultipartFile multipartFile, Long userImageId);
+
 }

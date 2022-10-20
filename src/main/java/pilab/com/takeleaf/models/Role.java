@@ -1,5 +1,6 @@
 package pilab.com.takeleaf.models;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Role {
+public class Role implements Serializable{
     
     public Role() {
     }
