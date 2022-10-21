@@ -13,9 +13,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Role implements Serializable{
-    
+    private static final long serialVersionUID = 164129782975869L;
     public Role() {
     }
     public Role(int roleId, String name, Set<UserRole> userRoles) {
@@ -27,9 +29,13 @@ public class Role implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false,nullable = false)
     private int roleId;
+
     private String name;
+
     @OneToMany(mappedBy = "role",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<UserRole> userRoles=new HashSet<>();
+
     public int getRoleId() {
         return roleId;
     }

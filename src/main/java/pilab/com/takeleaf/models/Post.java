@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 @Entity
 public class Post implements Serializable{
-    
+    private static final long serialVersionUID = 1646697823329L;
     public Post() {
     }
     public Post(Long id, String name, String caption, String location, int likes, Date postedDate,

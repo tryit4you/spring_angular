@@ -11,7 +11,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Comment implements Serializable{
-    
+    private static final long serialVersionUID = 1646693214375869L;
     public Comment() {
     }
     public Comment(Integer id, String username, String content, Date postedDate) {
