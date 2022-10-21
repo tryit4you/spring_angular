@@ -21,7 +21,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 public class AppUser implements Serializable{
+
     private static final long serialVersionUID = 164669782975869L;
+
     public AppUser() {
     }
 
@@ -61,7 +63,7 @@ public class AppUser implements Serializable{
     private Date createdDate;
 
     @OneToMany(mappedBy = "appUser",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private Set<UserRole> userRoles=new HashSet<>();
+    private Set<UserRole> userRoles = new HashSet<>();
     
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name="appUser_id")

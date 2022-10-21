@@ -11,11 +11,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.CreationTimestamp;
 @Entity
 public class Post implements Serializable{
+
     private static final long serialVersionUID = 1646697823329L;
+   
     public Post() {
     }
     public Post(Long id, String name, String caption, String location, int likes, Date postedDate,
@@ -29,27 +32,39 @@ public class Post implements Serializable{
         this.userImageId = userImageId;
         this.commentList = commentList;
     }
+   
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false,nullable = false)
     private Long id;
+
     private String name;
+
     @Column(columnDefinition = "text")
     private String caption;
-    private String location;
-    private int likes;
-    private Date postedDate;
+
     private String username;
+
+    private String location;
+
+    private Long userImageId;
+    
+    private int likes;
+
+    @CreationTimestamp
+    private Date postedDate;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    //@JoinColumn(name="post_id")
+    private List<Comment> commentList;
+
     public String getUsername() {
         return username;
     }
     public void setUsername(String username) {
         this.username = username;
     }
-    private Long userImageId;
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name="post_id")
-    private List<Comment> commentList;
+
     public Long getId() {
         return id;
     }
