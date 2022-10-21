@@ -1,4 +1,4 @@
-package com.orchard.config;
+package pilab.com.takeleaf.config;
 
 public class SecurityConstants {
 	

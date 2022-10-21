@@ -3,13 +3,13 @@ package pilab.com.takeleaf.services;
 import java.util.HashMap;
 import java.util.List;
 
-
 import org.springframework.web.multipart.MultipartFile;
 
 import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.models.Role;
 
 public interface AccountService {
+    
     public AppUser saveUser(AppUser appUser);
 
     public AppUser findByUsername(String username);

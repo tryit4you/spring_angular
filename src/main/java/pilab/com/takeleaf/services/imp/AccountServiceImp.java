@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pilab.com.takeleaf.Utility.EmailConstructor;
 import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.models.Role;
+import pilab.com.takeleaf.models.UserRole;
 import pilab.com.takeleaf.repositories.AppUserRepository;
 import pilab.com.takeleaf.repositories.RoleRepository;
 import pilab.com.takeleaf.services.*;
@@ -27,6 +31,9 @@ import pilab.com.takeleaf.Utility.*;;
 @Transactional
 public class AccountServiceImp implements AccountService {
 
+    // @Autowired
+    //  private AccountService accountService;
+    
     @Autowired
     private BCryptPasswordEncoder bcrypt;
 
@@ -42,31 +49,31 @@ public class AccountServiceImp implements AccountService {
     @Autowired
     private JavaMailSender mailSender;
 
+    
+    
     @Override
-	@Transactional
-    public AppUser   saveUser(AppUser appUser) {
+    @Transactional
+    public AppUser saveUser(AppUser appUser) {
         String password = RandomStringUtils.randomAlphanumeric(10);
-		String encryptedPassword = bCryptPasswordEncoder.encode(password);
-		AppUser appUser = new AppUser();
+		String encryptedPassword = bcrypt.encode(password);
 		appUser.setPassword(encryptedPassword);
-		appUser.setName(name);
-		appUser.setUsername(username);
-		appUser.setEmail(email);
+        appUser.setCreatedDate(new Date());
 		Set<UserRole> userRoles = new HashSet<>();
-		userRoles.add(new UserRole(appUser, accountService.findUserRoleByName("USER")));
+		userRoles.add(new UserRole(appUser, findUserRoleByName("USER")));
 		appUser.setUserRoles(userRoles);
-		appUserRepo.save(appUser);
+		AppUser userResponse= userRepo.saveAndFlush(appUser);
+        
 		byte[] bytes;
 		try {
 			bytes = Files.readAllBytes(Constants.TEMP_USER.toPath());
-			String fileName = appUser.getId() + ".png";
+			String fileName = userResponse.getId() + ".png";
 			Path path = Paths.get(Constants.USER_FOLDER + fileName);
 			Files.write(path, bytes);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		mailSender.send(emailConstructor.constructNewUserEmail(appUser, password));
-		return appUser;     
+		return userResponse;     
 
     }
 
@@ -111,7 +118,7 @@ public class AccountServiceImp implements AccountService {
         String encryptPssword=bcrypt.encode(newPassword);
         appUser.setPassword(encryptPssword);
         userRepo.save(appUser);
-        mailSender.send(emailConstructor.constructUpdateUserMail(appUser));
+        mailSender.send(emailConstructor.constructUpdateUserProfileEmail(appUser));
     }
 
     @Override
@@ -131,7 +138,7 @@ public class AccountServiceImp implements AccountService {
         appUser.setPassword(encryptedPassword)
         ;
         userRepo.save(appUser);
-        mailSender.send(emailConstructor.constructNewUserMail(appUser, password));
+        mailSender.send(emailConstructor.constructResetPasswordEmail(appUser, password));
 
     }
 
@@ -144,7 +151,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public AppUser simpleSave(AppUser appUser) {
         userRepo.save(appUser);
-        mailSender.send(emailConstructor.constructUpdateUserMail(appUser));
+        mailSender.send(emailConstructor.constructUpdateUserProfileEmail(appUser));
         return  appUser;
     }
     @Override

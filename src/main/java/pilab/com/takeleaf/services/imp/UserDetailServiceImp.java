@@ -4,19 +4,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.models.UserRole;
 import pilab.com.takeleaf.services.AccountService;
-
+@Service
+@Transactional
 public class UserDetailServiceImp  implements UserDetailsService{
 
+    @Autowired
     private AccountService accountService;
 
     @Override
