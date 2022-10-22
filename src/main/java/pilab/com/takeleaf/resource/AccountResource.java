@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.services.AccountService;
+import pilab.com.takeleaf.services.FilesStoreService;
 
 @RestController
 @RequestMapping("/user")
@@ -31,6 +32,9 @@ public class AccountResource {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private FilesStoreService storeService;
 
     @GetMapping("/list")
     public ResponseEntity<?> getUsersList() {
@@ -108,7 +112,7 @@ public class AccountResource {
     public ResponseEntity<String> fileUpload(@RequestParam("image") MultipartFile multipartFile) {
         
         try {
-            accountService.saveUserImage(multipartFile,userImageId);
+            storeService.save(multipartFile);
             return new ResponseEntity<>("success", HttpStatus.OK);
 
         } catch (Exception e) {

@@ -2,6 +2,7 @@ package pilab.com.takeleaf.services.imp;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -61,7 +62,7 @@ public class PostServiceImp implements PostService {
     public Post deletePost(Post post) {
         try {
             Files.deleteIfExists(Paths.get(Constants.POST_FOLDER + "/" + post.getName() + ".png"));
-          return  postRepo.deletePostById( post.getId());
+            return postRepo.deletePostById(post.getId());
         } catch (Exception e) {
 
         }
@@ -70,22 +71,27 @@ public class PostServiceImp implements PostService {
 
     @Override
     public String savePostImage(MultipartFile multipartFile, String fileName) {
-       	/*
-		 * MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest)
-		 * request; Iterator<String> it = multipartRequest.getFileNames(); MultipartFile
-		 * multipartFile = multipartRequest.getFile(it.next());
-		 */
-		 
-		try {
-			byte[] bytes = multipartFile.getBytes();
-			Path path = Paths.get(Constants.POST_FOLDER + fileName + ".png");
-			Files.write(path, bytes, StandardOpenOption.CREATE);
-		} catch (IOException e) {
-			System.out.println("Error occured. Photo not saved!");
-			return "Error occured. Photo not saved!";
-		}
-		System.out.println("Photo saved successfully!");
-		return "Photo saved successfully!";
+        /*
+         * MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest)
+         * request; Iterator<String> it = multipartRequest.getFileNames(); MultipartFile
+         * multipartFile = multipartRequest.getFile(it.next());
+         */
+        Path root=Paths.get(Constants.POST_FOLDER);
+        try {
+            byte[] bytes = multipartFile.getBytes();
+
+            Path path = Paths.get(Constants.POST_FOLDER + fileName + ".png");
+            
+            Files.copy(multipartFile.getInputStream(), root.resolve(fileName+".png"));
+            if (Files.exists(path)) {
+                Files.write(path, bytes, StandardOpenOption.CREATE);
+            }
+        } catch (IOException e) {
+            System.out.println("Error occured. Photo not saved!");
+            return "Error occured. Photo not saved!";
+        }
+        System.out.println("Photo saved successfully!");
+        return "Photo saved successfully!";
     }
 
 }

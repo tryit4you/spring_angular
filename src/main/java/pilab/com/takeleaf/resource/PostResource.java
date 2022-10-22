@@ -24,6 +24,7 @@ import pilab.com.takeleaf.models.Comment;
 import pilab.com.takeleaf.models.Post;
 import pilab.com.takeleaf.services.AccountService;
 import pilab.com.takeleaf.services.CommentService;
+import pilab.com.takeleaf.services.FilesStoreService;
 import pilab.com.takeleaf.services.PostService;
 
 @RestController
@@ -39,6 +40,9 @@ public class PostResource {
 
 	@Autowired
 	CommentService commentService;
+
+	@Autowired
+	FilesStoreService storeService;
 
 	@GetMapping("/list")
 	public List<Post> getPostList() {
@@ -97,9 +101,9 @@ public class PostResource {
 
 	
 	@PostMapping("/photo/upload")
-	public ResponseEntity<String> fileUpload(@RequestParam("image") MultipartFile multipartFile) {
+	public ResponseEntity<String> fileUpload(@RequestParam("image") MultipartFile image) {
 		try {
-			postService.savePostImage(multipartFile, postImageName);
+			storeService.save(image);
 			return new ResponseEntity<>("Picture Saved!", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>("Picture was saved", HttpStatus.BAD_REQUEST);

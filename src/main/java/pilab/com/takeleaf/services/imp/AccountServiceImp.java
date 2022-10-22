@@ -71,7 +71,7 @@ public class AccountServiceImp implements AccountService {
 			Files.write(path, bytes);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}   
 		mailSender.send(emailConstructor.constructNewUserEmail(appUser, password));
 		return userResponse;     
 
@@ -163,7 +163,7 @@ public class AccountServiceImp implements AccountService {
 		 */
 		byte[] bytes;
 		try {
-			Files.deleteIfExists(Paths.get(Constants.USER_FOLDER + "/" + userImageId + ".png"));
+			Files.deleteIfExists(Paths.get(Constants.USER_FOLDER  + userImageId + ".png"));
 			bytes = multipartFile.getBytes();
 			Path path = Paths.get(Constants.USER_FOLDER + userImageId + ".png");
 			Files.write(path, bytes);
