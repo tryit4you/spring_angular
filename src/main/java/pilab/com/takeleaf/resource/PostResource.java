@@ -1,9 +1,9 @@
 package pilab.com.takeleaf.resource;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +22,18 @@ import org.springframework.web.multipart.MultipartFile;
 import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.models.Comment;
 import pilab.com.takeleaf.models.Post;
+import pilab.com.takeleaf.models.UploadFileResult;
 import pilab.com.takeleaf.services.AccountService;
 import pilab.com.takeleaf.services.CommentService;
+import pilab.com.takeleaf.services.FileValidationService;
 import pilab.com.takeleaf.services.FilesStoreService;
 import pilab.com.takeleaf.services.PostService;
 
 @RestController
 @RequestMapping("/post")
 public class PostResource {
-    private String postImageName;
-	
+	private String postImageName;
+
 	@Autowired
 	private PostService postService;
 
@@ -99,17 +101,23 @@ public class PostResource {
 		}
 	}
 
-	
-	@PostMapping("/photo/upload")
-	public ResponseEntity<String> fileUpload(@RequestParam("image") MultipartFile image) {
-		try {
-			storeService.save(image);
-			return new ResponseEntity<>("Picture Saved!", HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>("Picture was saved", HttpStatus.BAD_REQUEST);
+	@PostMapping("/file/upload")
+	public ResponseEntity<?> fileUpload(@RequestParam("data") MultipartFile[] datasFiles) {
+
+		List<UploadFileResult> fileResults= new ArrayList<>();
+
+		for (MultipartFile multipartFile : datasFiles) {
+			UploadFileResult fileResult= new UploadFileResult();
+			FileValidationService saveResult = storeService.save(multipartFile);
+			fileResult.setFileName(multipartFile.getOriginalFilename());
+			fileResult.setStatus(saveResult.validateResult());
+			fileResult.setDetails(saveResult.validateDetail());
+			fileResult.setCreatedBy( "default");
+			fileResults.add(fileResult);
 		}
+
+		return new ResponseEntity<>(fileResults, HttpStatus.OK);
 	}
-	 
 
 	@PostMapping("/like")
 	public ResponseEntity<?> likePost(@RequestBody HashMap<String, String> request) {
@@ -169,10 +177,10 @@ public class PostResource {
 		}
 		String content = request.get("content");
 		try {
-            Comment comment=new Comment();
-            comment.setContent(content);
-            comment.setUsername(username);
-            comment.setPostedDate(new Date());
+			Comment comment = new Comment();
+			comment.setContent(content);
+			comment.setUsername(username);
+			comment.setPostedDate(new Date());
 			commentService.saveComment(comment);
 			return new ResponseEntity<>(post, HttpStatus.OK);
 		} catch (Exception e) {

@@ -2,7 +2,6 @@ package pilab.com.takeleaf.services.imp;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -19,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pilab.com.takeleaf.models.AppUser;
 import pilab.com.takeleaf.models.Post;
 import pilab.com.takeleaf.repositories.PostRepository;
+import pilab.com.takeleaf.services.FileValidationService;
 import pilab.com.takeleaf.services.PostService;
 import pilab.com.takeleaf.Utility.*;;
 
@@ -28,6 +28,9 @@ public class PostServiceImp implements PostService {
 
     @Autowired
     private PostRepository postRepo;
+
+    @Autowired
+    private FileValidationService validateService;
 
     @Override
     public Post savePost(AppUser appUser, HashMap<String, String> request, String postImageName) {
@@ -71,11 +74,11 @@ public class PostServiceImp implements PostService {
 
     @Override
     public String savePostImage(MultipartFile multipartFile, String fileName) {
-        /*
-         * MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest)
-         * request; Iterator<String> it = multipartRequest.getFileNames(); MultipartFile
-         * multipartFile = multipartRequest.getFile(it.next());
-         */
+        
+        // FileValidationService validate= validateService.init(multipartFile).validate();
+        // if(validate.validateResult()==false){
+        //     return validate.validateDetail();
+        // }
         Path root=Paths.get(Constants.POST_FOLDER);
         try {
             byte[] bytes = multipartFile.getBytes();

@@ -7,17 +7,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import pilab.com.takeleaf.Utility.Constants;
+import pilab.com.takeleaf.services.FileValidationService;
 import pilab.com.takeleaf.services.FilesStoreService;
 
 @Service
 public class FilesStoreServiceImp implements FilesStoreService {
-    private final Path root = Paths.get("uploads");
+  private final Path root = Paths.get(Constants.POST_FOLDER);
+
+  @Autowired
+  private FileValidationService validateService;
 
   @Override
   public void init() {
@@ -29,12 +35,18 @@ public class FilesStoreServiceImp implements FilesStoreService {
   }
 
   @Override
-  public void save(MultipartFile file) {
-    try {
-      Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
-    } catch (Exception e) {
-      throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+  public FileValidationService save(MultipartFile file) {
+    FileValidationService validate = validateService.init(file).validate();
+    if (validate.validateResult() == false) {
+      return validate;
     }
+    try {
+      Files.copy(file.getInputStream(),this.root.resolve(file.getOriginalFilename()));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return validate;
+
   }
 
   @Override
